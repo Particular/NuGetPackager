@@ -38,6 +38,8 @@
       <BuildCommand>$(BuildCommand) -NonInteractive</BuildCommand>
     </PropertyGroup>
 
+    <MakeDir Directories="$(NuGetFolder)" Condition="!Exists('$(NuGetFolder)')" />
+
     <Exec Command="$(BuildCommand)"
           Condition=" '$(OS)' != 'Windows_NT' " />
 
