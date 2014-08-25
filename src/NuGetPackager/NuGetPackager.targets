@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="GitVersionTask.GetVersion" AssemblyFile="$(SolutionDir)packages\GitVersionTask.1.2.0\GitVersionTask.dll" />
+  <UsingTask TaskName="MSBuild.Community.Tasks.FileUpdate" AssemblyFile="$(SolutionDir)..\BuildSupport\MSBuild.Community.Tasks.dll" />
+
+  <PropertyGroup>
+    <NuGetVersion>x.x.x</NuGetVersion>
+  </PropertyGroup>
+
+  <Target Name="EnsureNuGetPackagerPrerequisites">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)packages\NuGet.CommandLine.2.8.2\tools\NuGet.exe')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)packages\NuGet.CommandLine.2.8.2\tools\NuGet.exe'))" />
+    <Error Condition="!Exists('$(SolutionDir)packages\GitVersionTask.1.2.0\Build\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)packages\GitVersionTask.1.2.0\Build\GitVersionTask.targets'))" />
+  </Target>
+
+  <Target Name="SetVersions">
+    <GetVersion SolutionDirectory="$(SolutionDir)">
+      <Output TaskParameter="NuGetVersion" PropertyName="NuGetVersion" />
+    </GetVersion>
+  </Target>
+
+  <Target Name="BuildPackage" DependsOnTargets="SetVersions">
+
+    <PropertyGroup>
+      <NuGetFolder>$(SolutionDir)..\nugets</NuGetFolder>
+      <NuGetExePath>$(SolutionDir)packages\NuGet.CommandLine.2.8.2\tools\NuGet.exe</NuGetExePath>
+
+      <NuSpecFile>$(SolutionDir)..\packaging\nuget\$(AssemblyName).nuspec</NuSpecFile>
+
+      <NuGetCommand Condition=" '$(OS)' == 'Windows_NT'">"$(NuGetExePath)"</NuGetCommand>
+      <NuGetCommand Condition=" '$(OS)' != 'Windows_NT' ">mono --runtime=v4.0.30319 "$(NuGetExePath)"</NuGetCommand>
+      <BuildCommand>$(NuGetCommand) pack "$(NuSpecFile)"</BuildCommand>
+      <BuildCommand>$(BuildCommand) -Version $(NuGetVersion)</BuildCommand>
+      <BuildCommand>$(BuildCommand) -OutputDirectory "$(NuGetFolder)"</BuildCommand>
+      <BuildCommand>$(BuildCommand) -NoPackageAnalysis</BuildCommand>
+      <BuildCommand>$(BuildCommand) -NonInteractive</BuildCommand>
+    </PropertyGroup>
+
+    <Exec Command="$(BuildCommand)"
+          Condition=" '$(OS)' != 'Windows_NT' " />
+
+    <Exec Command="$(BuildCommand)"
+          LogStandardErrorAsError="true"
+          Condition=" '$(OS)' == 'Windows_NT' " />
+  </Target>
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      EnsureNuGetPackagerPrerequisites;
+      SetVersions;
+      BuildPackage
+    </BuildDependsOn>
+  </PropertyGroup>
+
+</Project>
