@@ -20,7 +20,7 @@
     </GetVersion>
   </Target>
 
-  <Target Name="BuildPackage" DependsOnTargets="SetVersions">
+  <Target Name="BuildPackage" DependsOnTargets="SetVersions" Condition="'$(Configuration)' == 'Release'">
 
     <PropertyGroup>
       <NuGetFolder>$(SolutionDir)..\nugets</NuGetFolder>
