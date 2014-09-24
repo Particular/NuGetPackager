@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask TaskName="GitVersionTask.GetVersion" AssemblyFile="$(MSBuildThisFileDirectory)\GitVersionTask.dll" />
+  <UsingTask TaskName="GitVersionTask.GetVersion" AssemblyFile="$(SolutionDir)packages\GitVersionTask.1.2.1\GitVersionTask.dll" />
 
   <PropertyGroup>
     <NuGetVersion Condition="$(NuGetVersion) == ''">x.x.x</NuGetVersion>
@@ -16,7 +16,7 @@
 
     <PropertyGroup>
       <NuGetFolder>$(SolutionDir)..\nugets</NuGetFolder>
-      <NuGetExePath>$(MSBuildThisFileDirectory)\NuGet.exe</NuGetExePath>
+      <NuGetExePath>$(SolutionDir)packages\NuGet.CommandLine.2.8.2\tools\NuGet.exe</NuGetExePath>
 
       <NuSpecFile>$(SolutionDir)..\packaging\nuget\$(AssemblyName).nuspec</NuSpecFile>
 
