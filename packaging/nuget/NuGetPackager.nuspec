@@ -10,12 +10,13 @@
     <description>NuGetPackager</description>
     <summary></summary>
     <tags>NuGetPackager</tags>
+    <dependencies>
+      <dependency id="GitVersionTask" version="1.3.0" />
+    </dependencies>
   </metadata>
 
   <files>
     <file src="..\..\src\NuGetPackager\NuGetPackager.targets" target="build" />
-    <file src="..\..\src\packages\GitVersionTask.1.2.1\GitVersionTask.dll" target="build" />
-    <file src="..\..\src\packages\GitVersionTask.1.2.1\NativeBinaries\**\*" target="build\NativeBinaries" />
     <file src="..\..\src\packages\NuGet.Commandline.2.8.2\tools\NuGet.exe" target="build" />
   </files>
 </package>
