@@ -11,7 +11,7 @@
     <summary></summary>
     <tags>NuGetPackager</tags>
     <developmentDependency>true</developmentDependency>
-    <minClientVersion>2.5</minClientVersion>
+    <minClientVersion>2.8</minClientVersion>
     <dependencies>
       <dependency id="GitVersionTask" version="1.3.0" />
     </dependencies>
