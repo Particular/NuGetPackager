@@ -135,7 +135,8 @@ public class CreatePackages : Task, IPropertyProvider
             AddTools(packageBuilder);
             AddContent(packageBuilder);
 
-            SavePackage(packageBuilder, DeployFolder, ".nupkg", "Package created -> {0}");
+            if (!Log.HasLoggedErrors)
+                SavePackage(packageBuilder, DeployFolder, ".nupkg", "Package created -> {0}");
 
             // Build Release
             packageBuilder = new PackageBuilder
@@ -158,7 +159,8 @@ public class CreatePackages : Task, IPropertyProvider
             if (DeployContentInRelease)
                 AddContent(packageBuilder);
 
-            SavePackage(packageBuilder, DeployFolder, ".nupkg", "Package created -> {0}");
+            if (!Log.HasLoggedErrors)
+                SavePackage(packageBuilder, DeployFolder, ".nupkg", "Package created -> {0}");
         }
         finally
         {
@@ -180,13 +182,30 @@ public class CreatePackages : Task, IPropertyProvider
 
     void AddTools(PackageBuilder packageBuilder)
     {
-        var nugetCLI = Directory.GetFiles(PackagesFolder.FullPath(), "NuGet.exe", SearchOption.AllDirectories).First();
-        var releaseNotesCompiler = Directory.GetFiles(PackagesFolder.FullPath(), "ReleaseNotesCompiler.CLI.exe", SearchOption.AllDirectories).First();
+        var nugetCLI = Directory.GetFiles(PackagesFolder.FullPath(), "NuGet.exe", SearchOption.AllDirectories).FirstOrDefault();
+        var releaseNotesCompiler = Directory.GetFiles(PackagesFolder.FullPath(), "ReleaseNotesCompiler.CLI.exe", SearchOption.AllDirectories).FirstOrDefault();
 
-        packageBuilder.PopulateFiles("", new[] {
-            new ManifestFile { Source = nugetCLI, Target = "tools" },
-            new ManifestFile { Source = releaseNotesCompiler, Target = "tools" }
-        });
+        var error = false;
+
+        if (string.IsNullOrEmpty(nugetCLI))
+        {
+            Log.LogError("Could not find tool 'NuGet.exe' in '{0}' for deployment script.", PackagesFolder.FullPath());
+            error = true;
+        }
+
+        if (string.IsNullOrEmpty(releaseNotesCompiler))
+        {
+            Log.LogError("Could not find tool 'ReleaseNotesCompiler.CLI.exe' in '{0}' for deployment script.", PackagesFolder.FullPath());
+            error = true;
+        }
+
+        if (!error)
+        {
+            packageBuilder.PopulateFiles("", new[] {
+                new ManifestFile { Source = nugetCLI, Target = "tools" },
+                new ManifestFile { Source = releaseNotesCompiler, Target = "tools" }
+            });
+        }
     }
 
     void AddDeployScriptForStagingNuGet(PackageBuilder packageBuilder)
