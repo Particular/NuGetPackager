@@ -12,20 +12,24 @@ $requiredvariables | % {
     }
 }
 
+Write-Host "{{logmessage}}"
+
+& ".\tools\ReleaseNotesCompiler.CLI.exe" {{releasecommand}} -u $ghusername -p $ghpassword -o "Particular" -r "{{projectname}}" -m "{{version}}"
+
+if ( -not (Test-Path '.\content' -PathType Container) ) {
+    Exit 0
+}
+
 #content folder in nuget package contains files to upload
 push-location .\content
 
 #rename .zip files back to .nupkg
 Get-ChildItem -Path ".\*" -Include "*.nzip" | Rename-Item -NewName { $_.BaseName }
 
-Write-Host "{{logmessage}}"
-
-& "..\tools\ReleaseNotesCompiler.CLI.exe" {{releasecommand}} -u $ghusername -p $ghpassword -o "Particular" -r "{{projectname}}" -m "{{version}}"
-
 $files = Get-ChildItem -Path ".\*" -Include "*.nupkg"
 foreach ($file in $files) { 
     $fileName =  $file.Name
 
     & "..\tools\NuGet.exe" push $fileName ${{nugetkey}} {{nugetsource}}
-	{{extrapush}}
+    {{extrapush}}
 }
