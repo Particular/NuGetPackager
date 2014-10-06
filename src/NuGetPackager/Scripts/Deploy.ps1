@@ -15,6 +15,9 @@ $requiredvariables | % {
 Write-Host "{{logmessage}}"
 
 & ".\tools\ReleaseNotesCompiler.CLI.exe" {{releasecommand}} -u $ghusername -p $ghpassword -o "Particular" -r "{{projectname}}" -m "{{version}}"
+if ($LASTEXITCODE -ne 0) {
+    throw "ReleaseNotesCompiler returned $LASTEXITCODE"
+}
 
 if ( -not (Test-Path '.\content' -PathType Container) ) {
     Exit 0
