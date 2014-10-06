@@ -87,6 +87,11 @@ public class CreatePackages : Task, IPropertyProvider
                 }
             }
         }
+
+        if (!deployToNuGet && !deployToChocolatey)
+        {
+            Log.LogError("No nuspec files found at '{0}' or '{1}'.", Path.Combine(PackagingFolder.FullPath(), "nuget"), Path.Combine(PackagingFolder.FullPath(), "chocolatey"));
+        }
     }
 
     void CreatePackagesFromNuSpecFile(string nuSpec)
