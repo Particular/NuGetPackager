@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\create_update_octopus_project.ps1" />
     <None Include="LocalNuGetPackager.targets">
       <SubType>Designer</SubType>
     </None>

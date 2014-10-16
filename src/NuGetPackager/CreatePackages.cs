@@ -160,7 +160,10 @@ public class CreatePackages : Task, IPropertyProvider
                 AddContent(packageBuilder);
 
             if (!Log.HasLoggedErrors)
+            {
                 SavePackage(packageBuilder, DeployFolder, ".nupkg", "Package created -> {0}");
+                AddOctopusUpdateScript(DeployFolder);
+            }
         }
         finally
         {
@@ -312,6 +315,19 @@ public class CreatePackages : Task, IPropertyProvider
         }
 
         packageBuilder.PopulateFiles("", new[] { new ManifestFile { Source = deployFile, Target = "Deploy.ps1" } });
+    }
+
+    void AddOctopusUpdateScript(ITaskItem destinationFolder)
+    {
+        var dir = destinationFolder.FullPath();
+
+        var updateOctopusFile = Path.Combine(dir, "create_update_octopus_project.ps1");
+        using (var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("NuGetPackager.Scripts.create_update_octopus_project.ps1"))
+        using (var file = new FileStream(updateOctopusFile, FileMode.Create, FileAccess.Write))
+        {
+            resource.CopyTo(file);
+            file.Flush();
+        }
     }
 
     void SavePackage(PackageBuilder packageBuilder, ITaskItem destinationFolder, string filenameSuffix, string logMessage)
