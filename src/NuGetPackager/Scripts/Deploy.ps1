@@ -14,7 +14,14 @@ $requiredvariables | % {
 
 Write-Host "{{logmessage}}"
 
-& ".\tools\ReleaseNotesCompiler.CLI.exe" {{releasecommand}} -u $ghusername -p $ghpassword -o "Particular" -r "{{projectname}}" -m "{{version}}"
+if ( -not (Test-Path '.\asset' -PathType Container) ) {
+    & ".\tools\ReleaseNotesCompiler.CLI.exe" {{releasecommand}} -u $ghusername -p $ghpassword -o "Particular" -r "{{projectname}}" -m "{{version}}"
+} else {
+    $assets = Get-ChildItem .\asset
+
+    & ".\tools\ReleaseNotesCompiler.CLI.exe" {{releasecommand}} -u $ghusername -p $ghpassword -o "Particular" -r "{{projectname}}" -m "{{version}}" -a $assets[0].FullName
+}
+
 if ($LASTEXITCODE -ne 0) {
     throw "ReleaseNotesCompiler returned $LASTEXITCODE"
 }

@@ -101,7 +101,9 @@ public class CreatePackages : Task, IPropertyProvider
         {
             var manifest = Manifest.ReadFrom(stream, this, false);
             packageBuilder.Populate(manifest.Metadata);
-            packageBuilder.PopulateFiles("", manifest.Files);
+
+            if (manifest.Files != null)
+                packageBuilder.PopulateFiles("", manifest.Files);
         }
 
         SavePackage(packageBuilder, NuGetsFolder, ".nupkg", "Package created -> {0}");
