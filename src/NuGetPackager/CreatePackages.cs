@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -11,6 +12,7 @@ public class CreatePackages : Task, IPropertyProvider
 {
     private bool deployToNuGet;
     private bool deployToChocolatey;
+    private string tmpNugetsFolder;
 
     public bool DeployContentInRelease { get; set; }
 
@@ -31,6 +33,7 @@ public class CreatePackages : Task, IPropertyProvider
 
     [Required]
     public ITaskItem DeployFolder { get; set; }
+
 
     public override bool Execute()
     {
@@ -53,7 +56,9 @@ public class CreatePackages : Task, IPropertyProvider
 
     private void InnerExecute()
     {
-        Directory.CreateDirectory(NuGetsFolder.FullPath());
+        var tmp = Guid.NewGuid().ToString("N");
+        tmpNugetsFolder = Path.Combine(NuGetsFolder.FullPath(), tmp);
+        Directory.CreateDirectory(tmpNugetsFolder);
         Directory.CreateDirectory(DeployFolder.FullPath());
 
         CreatePackagesFromNuSpecs();
@@ -106,12 +111,12 @@ public class CreatePackages : Task, IPropertyProvider
                 packageBuilder.PopulateFiles("", manifest.Files);
         }
 
-        SavePackage(packageBuilder, NuGetsFolder, ".nupkg", "Package created -> {0}");
+        SavePackage(packageBuilder, tmpNugetsFolder, ".nupkg", "Package created -> {0}");
     }
 
     void CreateDeploymentPackages()
     {
-        foreach (var nupkg in Directory.GetFiles(NuGetsFolder.FullPath(), "*.nupkg"))
+        foreach (var nupkg in Directory.GetFiles(tmpNugetsFolder, "*.nupkg"))
         {
             File.Copy(nupkg, nupkg + ".nzip", true);
         }
@@ -138,7 +143,7 @@ public class CreatePackages : Task, IPropertyProvider
             AddContent(packageBuilder);
 
             if (!Log.HasLoggedErrors)
-                SavePackage(packageBuilder, DeployFolder, ".nupkg", "Package created -> {0}");
+                SavePackage(packageBuilder, DeployFolder.FullPath(), ".nupkg", "Package created -> {0}");
 
             // Build Release
             packageBuilder = new PackageBuilder
@@ -163,23 +168,20 @@ public class CreatePackages : Task, IPropertyProvider
 
             if (!Log.HasLoggedErrors)
             {
-                SavePackage(packageBuilder, DeployFolder, ".nupkg", "Package created -> {0}");
+                SavePackage(packageBuilder, DeployFolder.FullPath(), ".nupkg", "Package created -> {0}");
                 AddOctopusUpdateScript(DeployFolder);
             }
         }
         finally
         {
             // Clean up
-            foreach (var nupkg in Directory.GetFiles(NuGetsFolder.FullPath(), "*.nzip"))
-            {
-                File.Delete(nupkg);
-            }
+            Directory.Delete(tmpNugetsFolder, true);
         }
     }
 
     void AddContent(PackageBuilder packageBuilder)
     {
-        foreach (var nupkg in Directory.GetFiles(NuGetsFolder.FullPath(), "*.nzip"))
+        foreach (var nupkg in Directory.GetFiles(tmpNugetsFolder, "*.nzip"))
         {
             packageBuilder.PopulateFiles("", new[] { new ManifestFile { Source = nupkg, Target = "content" } });
         }
@@ -332,14 +334,12 @@ public class CreatePackages : Task, IPropertyProvider
         }
     }
 
-    void SavePackage(PackageBuilder packageBuilder, ITaskItem destinationFolder, string filenameSuffix, string logMessage)
+    void SavePackage(PackageBuilder packageBuilder, string destinationFolder, string filenameSuffix, string logMessage)
     {
-        var dir = destinationFolder.FullPath();
+        var filename = Path.Combine(destinationFolder, packageBuilder.GetFullName()) + filenameSuffix;
 
-        var filename = Path.Combine(dir, packageBuilder.GetFullName()) + filenameSuffix;
-
-        if (!Directory.Exists(dir))
-            Directory.CreateDirectory(dir);
+        if (!Directory.Exists(destinationFolder))
+            Directory.CreateDirectory(destinationFolder);
 
         using (var file = new FileStream(filename, FileMode.Create))
         {
