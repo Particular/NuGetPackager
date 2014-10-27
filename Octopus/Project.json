@@ -2,7 +2,8 @@
   "IncludedLibraryVariableSetIds": [
     "LibraryVariableSets-33",
     "LibraryVariableSets-36",
-    "LibraryVariableSets-35"
+    "LibraryVariableSets-35",
+	"LibraryVariableSets-65"
   ],
   "DefaultToSkipIfAlreadyInstalled": false,
   "VersioningStrategy": {
