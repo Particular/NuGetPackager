@@ -9,15 +9,17 @@ namespace NuGetPackager
     class PackageCreator : IPropertyProvider
     {
         readonly string packagingFolderFullPath;
-        readonly string destinationFolderFullPath;
+        readonly string nugetsFolderFullPath;
+        readonly string chocosFolderFullPath;
         readonly string projectName;
         readonly TaskLoggingHelper log;
         readonly string version;
 
-        public PackageCreator(string packagingFolderFullPath, string destinationFolderFullPath, string projectName, string version, TaskLoggingHelper log)
+        public PackageCreator(string packagingFolderFullPath, string nugetsFolderFullPath, string chocosFolderFullPath, string projectName, string version, TaskLoggingHelper log)
         {
             this.packagingFolderFullPath = packagingFolderFullPath;
-            this.destinationFolderFullPath = destinationFolderFullPath;
+            this.nugetsFolderFullPath = nugetsFolderFullPath;
+            this.chocosFolderFullPath = chocosFolderFullPath;
             this.projectName = projectName;
             this.log = log;
             this.version = version;
@@ -32,7 +34,7 @@ namespace NuGetPackager
             {
                 deployToNuGet = true;
 
-                CreatePackagesFromNuSpecFile(nuSpec);
+                CreatePackagesFromNuSpecFile(nuSpec, nugetsFolderFullPath);
             }
 
             var chocolateyFolder = Path.Combine(packagingFolderFullPath, "chocolatey");
@@ -46,7 +48,7 @@ namespace NuGetPackager
 
                     foreach (var chocolateyNuSpec in nuSpecs)
                     {
-                        CreatePackagesFromNuSpecFile(chocolateyNuSpec);
+                        CreatePackagesFromNuSpecFile(chocolateyNuSpec, chocosFolderFullPath);
                     }
                 }
             }
@@ -57,7 +59,7 @@ namespace NuGetPackager
             }
         }
 
-        void CreatePackagesFromNuSpecFile(string nuSpec)
+        void CreatePackagesFromNuSpecFile(string nuSpec, string destinationFolderFullPath)
         {
             var packageBuilder = new PackageBuilder();
             using (var stream = File.OpenRead(nuSpec))

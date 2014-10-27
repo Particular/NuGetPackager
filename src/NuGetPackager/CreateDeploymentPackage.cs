@@ -20,6 +20,9 @@ public class CreateDeploymentPackage : Task
     public ITaskItem NuGetsFolder { get; set; }
 
     [Required]
+    public ITaskItem ChocosFolder { get; set; }
+
+    [Required]
     public ITaskItem DeployFolder { get; set; }
 
     public override bool Execute()
@@ -45,7 +48,7 @@ public class CreateDeploymentPackage : Task
     {
         Directory.CreateDirectory(DeployFolder.FullPath());
 
-        var packageCreator = new DeploymentPackageCreator(NuGetsFolder.FullPath(), DeployFolder.FullPath(), PackagesFolder.FullPath(), ProductName, Version, Log);
+        var packageCreator = new DeploymentPackageCreator(NuGetsFolder.FullPath(), ChocosFolder.FullPath(),  DeployFolder.FullPath(), PackagesFolder.FullPath(), ProductName, Version, Log);
         packageCreator.CreateDeploymentPackages();
     }
 }

@@ -8,13 +8,15 @@
       ProjectName="$(MSBuildProjectName)"
       Version="$(GfvNuGetVersion)"
       PackagingFolder="$(SolutionDir)..\packaging\"
-      NuGetsFolder="$(SolutionDir)..\nugets\" />
+      NuGetsFolder="$(SolutionDir)..\nugets\"
+      ChocosFolder="$(SolutionDir)..\chocos\" />
 
     <CreateDeploymentPackage
       ProductName="$(MSBuildProjectName)"
       Version="$(GfvNuGetVersion)"
       PackagesFolder="$(SolutionDir)packages\"
       NuGetsFolder="$(SolutionDir)..\nugets\"
+      ChocosFolder="$(SolutionDir)..\chocos\"
       DeployFolder="$(SolutionDir)..\deploy\" />
   </Target>
 

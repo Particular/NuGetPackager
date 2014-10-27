@@ -11,14 +11,16 @@ namespace NuGetPackager
     {
         readonly TaskLoggingHelper log;
         readonly string nugetsFolderFullPath;
+        readonly string chocosFolderFullPath;
         readonly string deployFolderFullPath;
         readonly string packagesFolderFullPath;
         readonly string productName;
         readonly string version;
 
-        public DeploymentPackageCreator(string nugetsFolderFullPath, string deployFolderFullPath, string packagesFolderFullPath, string productName, string version, TaskLoggingHelper log)
+        public DeploymentPackageCreator(string nugetsFolderFullPath, string chocosFolderFullPath, string deployFolderFullPath, string packagesFolderFullPath, string productName, string version, TaskLoggingHelper log)
         {
             this.log = log;
+            this.chocosFolderFullPath = chocosFolderFullPath;
             this.nugetsFolderFullPath = nugetsFolderFullPath;
             this.deployFolderFullPath = deployFolderFullPath;
             this.packagesFolderFullPath = packagesFolderFullPath;
@@ -31,6 +33,10 @@ namespace NuGetPackager
             foreach (var nupkg in Directory.GetFiles(nugetsFolderFullPath, "*.nupkg"))
             {
                 File.Copy(nupkg, nupkg + ".nzip", true);
+            }
+            foreach (var nupkg in Directory.GetFiles(chocosFolderFullPath, "*.nupkg"))
+            {
+                File.Copy(nupkg, nupkg + ".czip", true);
             }
 
             try
@@ -45,7 +51,11 @@ namespace NuGetPackager
             finally
             {
                 // Clean up
-                foreach (var nupkg in Directory.GetFiles(nugetsFolderFullPath, "*.?zip"))
+                foreach (var nupkg in Directory.GetFiles(nugetsFolderFullPath, "*.nzip"))
+                {
+                    File.Delete(nupkg);
+                }
+                foreach (var nupkg in Directory.GetFiles(chocosFolderFullPath, "*.czip"))
                 {
                     File.Delete(nupkg);
                 }
@@ -74,6 +84,10 @@ namespace NuGetPackager
         void AddContent(PackageBuilder packageBuilder)
         {
             foreach (var nupkg in Directory.GetFiles(nugetsFolderFullPath, "*.nzip"))
+            {
+                packageBuilder.PopulateFiles("", new[] { new ManifestFile { Source = nupkg, Target = "content" } });
+            }
+            foreach (var nupkg in Directory.GetFiles(chocosFolderFullPath, "*.czip"))
             {
                 packageBuilder.PopulateFiles("", new[] { new ManifestFile { Source = nupkg, Target = "content" } });
             }

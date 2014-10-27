@@ -9,7 +9,7 @@ $nugets = Get-ChildItem -Path ".\content\*" -Include "*.nzip"
 $chocos = Get-ChildItem -Path ".\content\*" -Include "*.czip"
 
 # passed from Octopus  
-$requiredvariables = @("ghusername", "ghpassword")
+$requiredvariables = @("ghusername", "ghpassword", "releasecommand")
 
 if ($nugets -ne $null) {
 	$requiredvariables += "nugetkey"
@@ -54,12 +54,12 @@ Get-ChildItem -Path ".\*" -Include @("*.nzip","*.czip") | Rename-Item -NewName {
 
 # push nuget packages if any
 foreach ($file in $nugets) { 
-    $fileName =  $file.Name
-    & "..\tools\NuGet.exe" push $fileName $nugetkey $nugetsource
+    $fileName =  $file.BaseName
+    & "..\tools\NuGet.exe" push $fileName $nugetkey -Source $nugetsource
 }
 
 # push choco packages if any
 foreach ($file in $chocos) { 
-    $fileName =  $file.Name
-    & "..\tools\NuGet.exe" push $fileName $chocolateykey $chocolateysource
+    $fileName =  $file.BaseName
+    & "..\tools\NuGet.exe" push $fileName $chocolateykey -Source $chocolateysource
 }
