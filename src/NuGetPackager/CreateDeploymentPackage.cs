@@ -5,19 +5,22 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using NuGetPackager;
 
-public class CreatePackages : Task
+public class CreateDeploymentPackage : Task
 {
     [Required]
-    public string ProjectName { get; set; }
+    public string ProductName { get; set; }
 
     [Required]
     public string Version { get; set; }
 
     [Required]
-    public ITaskItem PackagingFolder { get; set; }
+    public ITaskItem PackagesFolder { get; set; }
 
     [Required]
     public ITaskItem NuGetsFolder { get; set; }
+
+    [Required]
+    public ITaskItem DeployFolder { get; set; }
 
     public override bool Execute()
     {
@@ -40,9 +43,9 @@ public class CreatePackages : Task
 
     void InnerExecute()
     {
-        Directory.CreateDirectory(NuGetsFolder.FullPath());
+        Directory.CreateDirectory(DeployFolder.FullPath());
 
-        var packageCreator = new PackageCreator(PackagingFolder.FullPath(), NuGetsFolder.FullPath(), ProjectName, Version, Log);
-        packageCreator.CreatePackagesFromNuSpecs();
+        var packageCreator = new DeploymentPackageCreator(NuGetsFolder.FullPath(), DeployFolder.FullPath(), PackagesFolder.FullPath(), ProductName, Version, Log);
+        packageCreator.CreateDeploymentPackages();
     }
 }

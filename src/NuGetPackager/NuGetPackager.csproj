@@ -44,6 +44,9 @@
     <EmbeddedResource Include="Scripts\Deploy.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateDeploymentPackage.cs" />
+    <Compile Include="PackageCreator.cs" />
+    <Compile Include="DeploymentPackageCreator.cs" />
     <Compile Include="TaskItemExtensions.cs" />
     <Compile Include="CreatePackages.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
