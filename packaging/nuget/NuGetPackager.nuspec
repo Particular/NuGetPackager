@@ -25,5 +25,7 @@
     <file src="..\..\src\NuGetPackager\bin\Release\NuGet.Core.dll" target="build" />
     <file src="..\..\src\NuGetPackager\bin\Release\NuGetPackager.dll" target="build" />
     <file src="..\..\src\NuGetPackager\NuGetPackager.targets" target="build" />
+    <file src="..\..\src\NuGetPackager\NuGetPackagerLite.targets" target="build" />
+    <file src="..\..\src\NuGetPackager\NuGetPackagerSolution.targets" target="build" />
   </files>
 </package>

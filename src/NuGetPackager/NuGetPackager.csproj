@@ -37,6 +37,12 @@
     <None Include="LocalNuGetPackager.targets">
       <SubType>Designer</SubType>
     </None>
+    <None Include="NuGetPackagerSolution.targets">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NuGetPackagerLite.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NuGetPackager.targets">
       <SubType>Designer</SubType>
     </None>
