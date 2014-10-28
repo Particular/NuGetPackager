@@ -2,14 +2,27 @@
 [Parameter(Mandatory=$true)]
 [String]$ProjectName,
 [Parameter(Mandatory=$true)]
-[String]$API_Key
+[String]$API_Key,
+[Parameter(Mandatory=$false)]
+[String]$Branch = "",
+[Parameter(Mandatory=$false)]
+[String]$Major = "",
+[Parameter(Mandatory=$false)]
+[String]$Minor = ""
 )
 
 $project_slug = $ProjectName.Replace(".","-").ToLower()
 
 function Replace-Placeholders {
     param([string]$json)
-    $json = $json.Replace("%PROJECT_NAME%",$ProjectName)
+
+	if ($Branch -eq "support") {
+		$octo_project_name = "${ProjectName}-${Major}.${Minor}"
+	} else {
+		$octo_project_name = $ProjectName
+	}
+
+    $json = $json.Replace("%OCTO_PROJECT_NAME%",$octo_project_name).Replace("%PROJECT_NAME%",$ProjectName)
     $json
 }
 
@@ -55,6 +68,11 @@ function Update-OctopusProject {
     $process_id = $response_object.DeploymentProcessId
 
     Update-OctopusProcess $process_id
+}
+
+if ( ($Branch -ne "master") -and ($Branch -ne "support")) {
+	Write-Host "Not a master or support branch. Nothing to do"
+	return
 }
 
 try {

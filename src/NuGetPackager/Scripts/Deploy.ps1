@@ -28,14 +28,18 @@ $requiredvariables | % {
     }
 }
 
-Write-Host "About to $releasecommand GitHub release for version "
+$releasenumber = $OctopusParameters['Octopus.Release.Number'];
+
+Write-Host "About to $releasecommand GitHub release for version $releasenumber"
+
+$octoproject = $OctopusParameters['Octopus.Project.Name']
+$githubproject = $octoproject.Split('-')[0];
 
 if ( -not (Test-Path '.\asset' -PathType Container) ) {
-    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $OctopusParameters['Octopus.Project.Name'] -m $OctopusParameters['Octopus.Release.Number']
+    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $githubproject -m $releasenumber
 } else {
     $assets = Get-ChildItem .\asset
-
-    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $OctopusParameters['Octopus.Project.Name'] -m $OctopusParameters['Octopus.Release.Number'] -a $assets[0].FullName
+    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $githubproject -m $releasenumber -a $assets[0].FullName
 }
 
 if ($LASTEXITCODE -ne 0) {
