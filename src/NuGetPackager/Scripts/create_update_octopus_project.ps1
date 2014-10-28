@@ -9,18 +9,18 @@ $Branch = "{{Branch}}"
 $Major = "{{Major}}"
 $Minor = "{{Minor}}"
 
-$project_slug = $ProjectName.Replace(".","-").ToLower()
+if ($Branch -eq "support") {
+	$OctoProjectName = "${ProjectName}-${Major}.${Minor}"
+} else {
+	$OctoProjectName = $ProjectName
+}
+
+$project_slug = $OctoProjectName.Replace(".","-").ToLower()
 
 function Replace-Placeholders {
     param([string]$json)
 
-	if ($Branch -eq "support") {
-		$octo_project_name = "${ProjectName}-${Major}.${Minor}"
-	} else {
-		$octo_project_name = $ProjectName
-	}
-
-    $json = $json.Replace("%OCTO_PROJECT_NAME%",$octo_project_name).Replace("%PROJECT_NAME%",$ProjectName)
+    $json = $json.Replace("%OCTO_PROJECT_NAME%",$OctoProjectName).Replace("%PROJECT_NAME%",$ProjectName)
     $json
 }
 
