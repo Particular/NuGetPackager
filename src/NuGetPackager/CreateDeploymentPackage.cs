@@ -51,7 +51,7 @@ public class CreateDeploymentPackage : Task
     {
         Directory.CreateDirectory(DeployFolder.FullPath());
 
-        var packageCreator = new DeploymentPackageCreator(NuGetsFolder.FullPath(), ChocosFolder.FullPath(),  DeployFolder.FullPath(), PackagesFolder.FullPath(), ProductName, Version, Log);
+        var packageCreator = new DeploymentPackageCreator(NuGetsFolder.FullPath(), ChocosFolder.FullPath(),  DeployFolder.FullPath(), PackagesFolder.FullPath(), ProductName, Version, Branch, Log);
         packageCreator.CreateDeploymentPackages();
     }
 }
