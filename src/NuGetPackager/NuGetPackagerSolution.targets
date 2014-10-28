@@ -10,6 +10,7 @@
     <CreateDeploymentPackage
       ProductName="$(MSBuildProductName)"
       Version="$(GfvNuGetVersion)"
+      Branch="$(GfvBranchName)"
       PackagesFolder="$(SolutionDir)packages\"
       NuGetsFolder="$(SolutionDir)..\nugets\"
       ChocosFolder="$(SolutionDir)..\chocos\"

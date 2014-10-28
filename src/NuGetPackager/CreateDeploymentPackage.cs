@@ -14,6 +14,9 @@ public class CreateDeploymentPackage : Task
     public string Version { get; set; }
 
     [Required]
+    public string Branch { get; set; }
+
+    [Required]
     public ITaskItem PackagesFolder { get; set; }
 
     [Required]

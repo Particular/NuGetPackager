@@ -2,6 +2,7 @@
 
 namespace NuGetPackager
 {
+    using System;
     using System.IO;
     using System.Reflection;
     using Microsoft.Build.Utilities;
@@ -16,8 +17,9 @@ namespace NuGetPackager
         readonly string packagesFolderFullPath;
         readonly string productName;
         readonly string version;
+        readonly string branch;
 
-        public DeploymentPackageCreator(string nugetsFolderFullPath, string chocosFolderFullPath, string deployFolderFullPath, string packagesFolderFullPath, string productName, string version, TaskLoggingHelper log)
+        public DeploymentPackageCreator(string nugetsFolderFullPath, string chocosFolderFullPath, string deployFolderFullPath, string packagesFolderFullPath, string productName, string version, string branch, TaskLoggingHelper log)
         {
             this.log = log;
             this.chocosFolderFullPath = chocosFolderFullPath;
@@ -26,6 +28,7 @@ namespace NuGetPackager
             this.packagesFolderFullPath = packagesFolderFullPath;
             this.productName = productName;
             this.version = version;
+            this.branch = branch;
         }
 
         public void CreateDeploymentPackages()
@@ -45,7 +48,7 @@ namespace NuGetPackager
                 
                 if (!log.HasLoggedErrors)
                 {
-                    ExtractScriptFromResource(deployFolderFullPath, "create_update_octopus_project.ps1");                    
+                    ExtractScriptFromResource(deployFolderFullPath, "create_update_octopus_project.ps1", ReplaceVersionControlValues);                    
                 }
             }
             finally
@@ -60,6 +63,17 @@ namespace NuGetPackager
                     File.Delete(nupkg);
                 }
             }
+        }
+
+        string ReplaceVersionControlValues(string script)
+        {
+            var versionParts = version.Split('.');
+            var major = versionParts[0];
+            var minor = versionParts[1];
+            return script
+                .Replace("{{Branch}}", branch)
+                .Replace("{{Major}}", major)
+                .Replace("{{Minor}}", minor);
         }
 
         void CreateDeployPackage(string id, string description)
@@ -124,20 +138,23 @@ namespace NuGetPackager
         static void AddDeployScript(PackageBuilder packageBuilder)
         {
             var tempPath = Path.GetTempPath();
-            ExtractScriptFromResource(tempPath,"Deploy.ps1");
+            ExtractScriptFromResource(tempPath,"Deploy.ps1", x => x);
 
             var deployFile = Path.Combine(Path.GetTempPath(), "Deploy.ps1");
             packageBuilder.PopulateFiles("", new[] { new ManifestFile { Source = deployFile, Target = "Deploy.ps1" } });
         }
 
-        static void ExtractScriptFromResource(string destinationFolderFullPath, string fileName)
+        static void ExtractScriptFromResource(string destinationFolderFullPath, string fileName, Func<string, string> replace)
         {
             var destinationPath = Path.Combine(destinationFolderFullPath, fileName);
             using (var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("NuGetPackager.Scripts."+fileName))
+            using (var reader = new StreamReader(resource))
             using (var file = new FileStream(destinationPath, FileMode.Create, FileAccess.Write))
+            using (var writer = new StreamWriter(file))
             {
-                resource.CopyTo(file);
-                file.Flush();
+                var script = reader.ReadToEnd();
+                script = replace(script);
+                writer.Write(script);
             }
         }
 

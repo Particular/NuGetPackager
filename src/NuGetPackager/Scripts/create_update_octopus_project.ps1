@@ -2,14 +2,12 @@
 [Parameter(Mandatory=$true)]
 [String]$ProjectName,
 [Parameter(Mandatory=$true)]
-[String]$API_Key,
-[Parameter(Mandatory=$false)]
-[String]$Branch = "",
-[Parameter(Mandatory=$false)]
-[String]$Major = "",
-[Parameter(Mandatory=$false)]
-[String]$Minor = ""
+[String]$API_Key
 )
+
+$Branch = "{{Branch}}"
+$Major = "{{Major}}"
+$Minor = "{{Minor}}"
 
 $project_slug = $ProjectName.Replace(".","-").ToLower()
 
