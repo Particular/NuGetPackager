@@ -8,8 +8,8 @@
     <CreateDeploymentPackage Condition="'$(CreateDeploymentPackage)' == ''">True</CreateDeploymentPackage>
   </PropertyGroup>
   
-  <Target Name="BuildPackages" Condition="('$(Configuration)' == 'Release') And ('$(CreatePackages)' == 'True')">
-    <CreatePackages
+  <Target Name="BuildPackages" Condition="'$(Configuration)' == 'Release'">
+    <CreatePackages Condition="'$(CreatePackages)' == 'True'"
       ProjectName="$(MSBuildProjectName)"
       Version="$(GfvNuGetVersion)"
       PackagingFolder="$(SolutionDir)..\packaging\"
