@@ -35,10 +35,18 @@ $requiredvariables | % {
 Write-Host "About to $releasecommand GitHub release for version $Version"
 
 if ( -not (Test-Path '.\asset' -PathType Container) ) {
-    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch
+	if ($releasecommand -eq "create") {
+		& ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch
+	} else {
+		& ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version
+	}
 } else {
     $assets = Get-ChildItem .\asset
-    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch -a $assets[0].FullName
+	if ($releasecommand -eq "create") {
+		& ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch -a $assets[0].FullName
+	} else {
+		& ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -a $assets[0].FullName
+	}
 }
 
 if ($LASTEXITCODE -ne 0) {
