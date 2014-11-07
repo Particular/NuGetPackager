@@ -54,7 +54,7 @@ if ($releasecommand -eq "create") {
         & ".\tools\ReleaseNotesCompiler.CLI.exe" publish -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -a $assets[0].FullName
     }
     if ($tweet) {
-	    & ".\tools\ConsoleTweet.exe" update -m "We've just released $Product v${Version}. For more details: https://github.com/Particular/{$Product}/releases/${Version}" --key $twitter_key --secret $twitter_secret --token $twitter_token --token_secret $twitter_tokensecret 
+	    & ".\tools\ConsoleTweet.exe" update -m "We've just released $Product v${Version}. For more details: https://github.com/Particular/${Product}/releases/${Version}" --key $twitter_key --secret $twitter_secret --token $twitter_token --token_secret $twitter_tokensecret 
     }
 }
 
