@@ -12,6 +12,8 @@ $Product = "{{Product}}"
 $nugets = Get-ChildItem -Path ".\content\*" -Include "*.nzip"
 $chocos = Get-ChildItem -Path ".\content\*" -Include "*.czip"
 
+$tweet = (Test-Path "variable:enabletweets") -and ($enabletweets -eq "true")
+
 # passed from Octopus  
 $requiredvariables = @("ghusername", "ghpassword", "releasecommand")
 
@@ -25,6 +27,10 @@ if ($chocos -ne $null) {
 	$requiredvariables += "chocolateysource"
 }
 
+if ($tweet) {
+    $requiredvariables += @("twitter_key","twitter_secret","twitter_token","twitter_tokensecret")
+}
+
 # ensure all required variables are present
 $requiredvariables | % {
     if (!(Test-Path "variable:$_")) {
@@ -34,19 +40,22 @@ $requiredvariables | % {
 
 Write-Host "About to $releasecommand GitHub release for version $Version"
 
-if ( -not (Test-Path '.\asset' -PathType Container) ) {
-	if ($releasecommand -eq "create") {
-		& ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch
-	} else {
-		& ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version
-	}
+
+if ($releasecommand -eq "create") {
+    if ( -not (Test-Path '.\asset' -PathType Container) ) {
+		& ".\tools\ReleaseNotesCompiler.CLI.exe" create -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch
+    } else {
+        & ".\tools\ReleaseNotesCompiler.CLI.exe" create -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch -a $assets[0].FullName
+    }
 } else {
-    $assets = Get-ChildItem .\asset
-	if ($releasecommand -eq "create") {
-		& ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch -a $assets[0].FullName
-	} else {
-		& ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -a $assets[0].FullName
-	}
+    if ( -not (Test-Path '.\asset' -PathType Container) ) {
+		& ".\tools\ReleaseNotesCompiler.CLI.exe" publish -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version
+    } else {
+        & ".\tools\ReleaseNotesCompiler.CLI.exe" publish -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -a $assets[0].FullName
+    }
+    if ($tweet) {
+	    & ".\tools\ConsoleTweet.exe" update -m "We've just released $Product v${Version}. For more details: https://github.com/Particular/{$Product}/releases/${Version}" --key $twitter_key --secret $twitter_secret --token $twitter_token --token_secret $twitter_tokensecret 
+    }
 }
 
 if ($LASTEXITCODE -ne 0) {

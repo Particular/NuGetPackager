@@ -111,30 +111,34 @@ namespace NuGetPackager
 
         void AddTools(PackageBuilder packageBuilder)
         {
-            var nugetCLI = Directory.GetFiles(packagesFolderFullPath, "NuGet.exe", SearchOption.AllDirectories).FirstOrDefault();
-            var releaseNotesCompiler = Directory.GetFiles(packagesFolderFullPath, "ReleaseNotesCompiler.CLI.exe", SearchOption.AllDirectories).FirstOrDefault();
+            var tools = new[]
+            {
+                "NuGet.exe",
+                "ReleaseNotesCompiler.CLI.exe",
+                "ConsoleTweet.exe"
+            };
 
-            var error = false;
+            var toolLocations = tools.Select(FindTool).ToList();
 
+            if (toolLocations.All(loc => loc != null))
+            {
+                packageBuilder.PopulateFiles("", toolLocations.Select(loc => new ManifestFile
+                {
+                    Source = loc,
+                    Target = "tools"
+                }).ToArray());
+            }
+        }
+
+        string FindTool(string name)
+        {
+            var nugetCLI = Directory.GetFiles(packagesFolderFullPath, name, SearchOption.AllDirectories).FirstOrDefault();
             if (string.IsNullOrEmpty(nugetCLI))
             {
-                log.LogError("Could not find tool 'NuGet.exe' in '{0}' for deployment script.", packagesFolderFullPath);
-                error = true;
+                log.LogError("Could not find tool '{0}' in '{1}' for deployment script.", name, packagesFolderFullPath);
+                return null;
             }
-
-            if (string.IsNullOrEmpty(releaseNotesCompiler))
-            {
-                log.LogError("Could not find tool 'ReleaseNotesCompiler.CLI.exe' in '{0}' for deployment script.", packagesFolderFullPath);
-                error = true;
-            }
-
-            if (!error)
-            {
-                packageBuilder.PopulateFiles("", new[] {
-                new ManifestFile { Source = nugetCLI, Target = "tools" },
-                new ManifestFile { Source = releaseNotesCompiler, Target = "tools" }
-            });
-            }
+            return nugetCLI;
         }
 
         void AddDeployScript(PackageBuilder packageBuilder)
