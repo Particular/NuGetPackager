@@ -6,6 +6,7 @@
   <PropertyGroup>
     <CreatePackages Condition="'$(CreatePackages)' == ''">True</CreatePackages>
     <CreateDeploymentPackage Condition="'$(CreateDeploymentPackage)' == ''">True</CreateDeploymentPackage>
+    <ProductName Condition="'$(ProductName)' == ''">$(MSBuildProjectName)</ProductName>
   </PropertyGroup>
 
   <Target Name="BuildPackages" Condition="'$(Configuration)' == 'Release'">
@@ -17,7 +18,7 @@
       ChocosFolder="$(SolutionDir)..\chocos\" />
 
     <CreateDeploymentPackage Condition="'$(CreateDeploymentPackage)' == 'True'"
-      ProductName="$(MSBuildProjectName)"
+      ProductName="$(ProductName)"
       Version="$(GfvNuGetVersion)"
       Branch="$(GfvBranchName)"
       PackagesFolder="$(SolutionDir)packages\"
