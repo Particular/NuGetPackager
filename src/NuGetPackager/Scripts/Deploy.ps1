@@ -4,6 +4,10 @@ trap {
     Exit 1
 }
 
+$Branch = "{{Branch}}"
+$Version = "{{Version}}"
+$Product = "{{Product}}"
+
 # memorize the list of nuget and choco packages
 $nugets = Get-ChildItem -Path ".\content\*" -Include "*.nzip"
 $chocos = Get-ChildItem -Path ".\content\*" -Include "*.czip"
@@ -28,18 +32,13 @@ $requiredvariables | % {
     }
 }
 
-$releasenumber = $OctopusParameters['Octopus.Release.Number'];
-
-Write-Host "About to $releasecommand GitHub release for version $releasenumber"
-
-$octoproject = $OctopusParameters['Octopus.Project.Name']
-$githubproject = $octoproject.Split('-')[0];
+Write-Host "About to $releasecommand GitHub release for version $Version"
 
 if ( -not (Test-Path '.\asset' -PathType Container) ) {
-    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $githubproject -m $releasenumber
+    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch
 } else {
     $assets = Get-ChildItem .\asset
-    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $githubproject -m $releasenumber -a $assets[0].FullName
+    & ".\tools\ReleaseNotesCompiler.CLI.exe" $releasecommand -u $ghusername -p $ghpassword -o "Particular" -r $Product -m $Version -t $Branch -a $assets[0].FullName
 }
 
 if ($LASTEXITCODE -ne 0) {

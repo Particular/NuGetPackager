@@ -73,7 +73,9 @@ namespace NuGetPackager
             return script
                 .Replace("{{Branch}}", branch)
                 .Replace("{{Major}}", major)
-                .Replace("{{Minor}}", minor);
+                .Replace("{{Minor}}", minor)
+                .Replace("{{Version}}", version)
+                .Replace("{{Product}}", productName);
         }
 
         void CreateDeployPackage(string id, string description)
@@ -135,10 +137,10 @@ namespace NuGetPackager
             }
         }
 
-        static void AddDeployScript(PackageBuilder packageBuilder)
+        void AddDeployScript(PackageBuilder packageBuilder)
         {
             var tempPath = Path.GetTempPath();
-            ExtractScriptFromResource(tempPath,"Deploy.ps1", x => x);
+            ExtractScriptFromResource(tempPath,"Deploy.ps1", ReplaceVersionControlValues);
 
             var deployFile = Path.Combine(Path.GetTempPath(), "Deploy.ps1");
             packageBuilder.PopulateFiles("", new[] { new ManifestFile { Source = deployFile, Target = "Deploy.ps1" } });
