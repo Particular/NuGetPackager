@@ -3,7 +3,12 @@
   <UsingTask TaskName="CreatePackages" AssemblyFile="NuGetPackager.dll" />
   <UsingTask TaskName="CreateDeploymentPackage" AssemblyFile="NuGetPackager.dll" />
 
-  <Target Name="BuildPackages" Condition="'$(Configuration)' == 'Release'">
+  <PropertyGroup>
+    <CreatePackages Condition="'$(CreatePackages)' == ''">True</CreatePackages>
+    <CreateDeploymentPackage Condition="'$(CreateDeploymentPackage)' == ''">True</CreateDeploymentPackage>
+  </PropertyGroup>
+  
+  <Target Name="BuildPackages" Condition="('$(Configuration)' == 'Release') And ('$(CreatePackages)' == 'True')">
     <CreatePackages
       ProjectName="$(MSBuildProjectName)"
       Version="$(GfvNuGetVersion)"
@@ -11,7 +16,7 @@
       NuGetsFolder="$(SolutionDir)..\nugets\"
       ChocosFolder="$(SolutionDir)..\chocos\" />
 
-    <CreateDeploymentPackage
+    <CreateDeploymentPackage Condition="'$(CreateDeploymentPackage)' == 'True'"
       ProductName="$(MSBuildProjectName)"
       Version="$(GfvNuGetVersion)"
       Branch="$(GfvBranchName)"
