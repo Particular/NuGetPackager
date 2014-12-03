@@ -7,6 +7,12 @@ trap {
 $Branch = "{{Branch}}"
 $Version = "{{Version}}"
 $Product = "{{Product}}"
+$Major = "{{Major}}"
+$Minor = "{{Minor}}"
+
+if ($Branch -eq "support") {
+	$Branch = "${Branch}-${Major}.${Minor}"
+}
 
 # memorize the list of nuget and choco packages
 $nugets = Get-ChildItem -Path ".\content\*" -Include "*.nzip"
