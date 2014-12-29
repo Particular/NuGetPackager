@@ -25,8 +25,13 @@
       NuGetsFolder="$(SolutionDir)..\nugets\"
       ChocosFolder="$(SolutionDir)..\chocos\"
       DeployFolder="$(SolutionDir)..\deploy\" />
+    <CreateItem Include="$(SolutionDir)packages\OctopusConfigUpdater.*\tools\create_update_octopus_project.ps1">
+      <Output TaskParameter="Include" ItemName="OctopusConfigUpdaterScript"/>
+    </CreateItem>
+    <Copy SourceFiles="@(OctopusConfigUpdaterScript)"
+      DestinationFolder="$(SolutionDir)..\deploy\"/>
   </Target>
-
+  
   <PropertyGroup>
     <BuildDependsOn>
       $(BuildDependsOn);
