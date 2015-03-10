@@ -33,26 +33,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\create_update_octopus_project.ps1" />
     <None Include="LocalNuGetPackager.targets">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="NuGetPackagerSolution.targets">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="NuGetPackagerLite.targets">
       <SubType>Designer</SubType>
     </None>
     <None Include="NuGetPackager.targets">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Scripts\Deploy.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CreateDeploymentPackage.cs" />
     <Compile Include="PackageCreator.cs" />
-    <Compile Include="DeploymentPackageCreator.cs" />
     <Compile Include="TaskItemExtensions.cs" />
     <Compile Include="CreatePackages.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
