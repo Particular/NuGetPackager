@@ -27,6 +27,9 @@ namespace NuGetPackager
 
         public void CreatePackagesFromNuSpecs()
         {
+            RecreatePackageFolder(nugetsFolderFullPath);
+            RecreatePackageFolder(chocosFolderFullPath);
+
             var nuSpec = Path.Combine(packagingFolderFullPath, "nuget", projectName + ".nuspec");
             var deployToNuGet = false;
             var deployToChocolatey = false;
@@ -56,6 +59,15 @@ namespace NuGetPackager
             if (!deployToNuGet && !deployToChocolatey)
             {
                 log.LogError("No nuspec files found at '{0}' or '{1}'.", Path.Combine(packagingFolderFullPath, "nuget"), Path.Combine(packagingFolderFullPath, "chocolatey"));
+            }
+        }
+
+        static void RecreatePackageFolder(string folder)
+        {
+            if (Directory.Exists(folder))
+            {
+                Directory.Delete(folder,true);
+                Directory.CreateDirectory(folder);
             }
         }
 
