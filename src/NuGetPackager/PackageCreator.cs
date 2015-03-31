@@ -27,8 +27,8 @@ namespace NuGetPackager
 
         public void CreatePackagesFromNuSpecs()
         {
-            RecreatePackageFolder(nugetsFolderFullPath);
-            RecreatePackageFolder(chocosFolderFullPath);
+            EnsurePackageFolderCreated(nugetsFolderFullPath);
+            EnsurePackageFolderCreated(chocosFolderFullPath);
 
             var nuSpec = Path.Combine(packagingFolderFullPath, "nuget", projectName + ".nuspec");
             var deployToNuGet = false;
@@ -62,11 +62,10 @@ namespace NuGetPackager
             }
         }
 
-        static void RecreatePackageFolder(string folder)
+        static void EnsurePackageFolderCreated(string folder)
         {
-            if (Directory.Exists(folder))
+            if (!Directory.Exists(folder))
             {
-                Directory.Delete(folder,true);
                 Directory.CreateDirectory(folder);
             }
         }
