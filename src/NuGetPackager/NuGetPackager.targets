@@ -3,8 +3,12 @@
   <UsingTask TaskName="CreatePackages" AssemblyFile="NuGetPackager.dll" />
 
   <Target Name="BuildPackages" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <ProjectName Condition="'$(NuSpecFileName)' != ''">$(NuSpecFileName)</ProjectName>
+      <ProjectName Condition="'$(NuSpecFileName)' == ''">$(MSBuildProjectName)</ProjectName>
+    </PropertyGroup>
     <CreatePackages
-      ProjectName="$(MSBuildProjectName)"
+      ProjectName="$(ProjectName)"
       Version="$(GfvNuGetVersion)"
       PackagingFolder="$(SolutionDir)..\packaging\"
       NuGetsFolder="$(SolutionDir)..\nugets\"

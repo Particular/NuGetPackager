@@ -42,3 +42,5 @@ The following conventions are used to build the package.
 - Solution is in the path `<project>\src\solution.sln`
 - NuSpec file is located at `<project>\packaging\nuget\<ProjectName>.nuspec`
 - Creates package file at `<project>\nugets\`
+
+You can specify a custom NuSpec filename, by adding a `<NuSpecFileName>` property inside your .csproj file, e.g.:     `<NuSpecFileName>MyCustomPackageName</NuSpecFileName>`
