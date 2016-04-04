@@ -16,6 +16,7 @@ Installed via NuGet.
 * `iconUrl` - Returns the iconUrl to the particular icon on S3
 * `requireLicenseAcceptance` - Returns always `true`
 * `copyright` - Returns an always up to date copyright
+* `tags` - Returns the tags which apply to all packages
 
 ### Sample nuspec
 ```
@@ -29,11 +30,12 @@ Installed via NuGet.
     <iconUrl>$iconUrl$</iconUrl>
     <requireLicenseAcceptance>$requireLicenseAcceptance$</requireLicenseAcceptance>
     <copyright>$copyright$</copyright>
+    <tags>$tags$</tags>
   </metadata>
 	...
 </package>
 ```
-	
+
 ## Conventions
 
 The following conventions are used to build the package.
