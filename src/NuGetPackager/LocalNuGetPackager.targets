@@ -3,13 +3,16 @@
   <UsingTask TaskName="CreatePackages" AssemblyFile="bin\Release\NuGetPackager.dll" />
 
   <Target Name="BuildPackages" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <ProjectName Condition="'$(NuSpecFileName)' != ''">$(NuSpecFileName)</ProjectName>
+      <ProjectName Condition="'$(NuSpecFileName)' == ''">$(MSBuildProjectName)</ProjectName>
+    </PropertyGroup>
     <CreatePackages
-      ProjectName="$(MSBuildProjectName)"
-      Version="$(GfvNuGetVersion)"
+      ProjectName="$(ProjectName)"
+      Version="$(GitVersion_NuGetVersion)"
       PackagingFolder="$(SolutionDir)..\packaging\"
       NuGetsFolder="$(SolutionDir)..\nugets\"
       ChocosFolder="$(SolutionDir)..\chocos\" />
-
   </Target>
 
   <PropertyGroup>

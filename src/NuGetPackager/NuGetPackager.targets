@@ -9,7 +9,7 @@
     </PropertyGroup>
     <CreatePackages
       ProjectName="$(ProjectName)"
-      Version="$(GfvNuGetVersion)"
+      Version="$(GitVersion_NuGetVersion)"
       PackagingFolder="$(SolutionDir)..\packaging\"
       NuGetsFolder="$(SolutionDir)..\nugets\"
       ChocosFolder="$(SolutionDir)..\chocos\" />
