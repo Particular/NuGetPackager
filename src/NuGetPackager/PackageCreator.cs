@@ -97,12 +97,12 @@
                     packageBuilder.PopulateFiles("", manifest.Files);
             }
 
-            SavePackage(packageBuilder, destinationFolderFullPath, ".nupkg", "Package created -> {0}");
+            SavePackage(packageBuilder, destinationFolderFullPath, "Package created -> {0}");
         }
 
-        void SavePackage(PackageBuilder packageBuilder, string destinationFolder, string filenameSuffix, string logMessage)
+        void SavePackage(PackageBuilder packageBuilder, string destinationFolder, string logMessage)
         {
-            var filename = Path.Combine(destinationFolder, packageBuilder.GetFullName()) + filenameSuffix;
+            var filename = Path.Combine(destinationFolder, $"{packageBuilder.Id}.{packageBuilder.Version}.nupkg");
 
             if (!Directory.Exists(destinationFolder))
                 Directory.CreateDirectory(destinationFolder);
