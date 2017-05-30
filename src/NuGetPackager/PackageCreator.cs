@@ -13,7 +13,6 @@
         readonly string nugetsFolderFullPath;
         readonly string projectName;
         readonly TaskLoggingHelper log;
-        readonly string version;
 
         public PackageCreator(string packagingFolderFullPath, string nugetsFolderFullPath, string projectName, string version, TaskLoggingHelper log)
         {
@@ -21,11 +20,10 @@
             this.nugetsFolderFullPath = nugetsFolderFullPath;
             this.projectName = projectName;
             this.log = log;
-            this.version = version;
 
             propertyAssignments = new Dictionary<string, Func<string>>
             {
-                { "version", () => this.version },
+                { "version", () => version },
                 { "authors", () => "NServiceBus Ltd" },
                 { "owners", () => "NServiceBus Ltd" },
                 { "licenseUrl", () => "http://particular.net/LicenseAgreement" },
