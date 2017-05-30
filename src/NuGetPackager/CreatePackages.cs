@@ -19,9 +19,6 @@ public class CreatePackages : Task
     [Required]
     public ITaskItem NuGetsFolder { get; set; }
 
-    [Required]
-    public ITaskItem ChocosFolder { get; set; }
-
     public override bool Execute()
     {
         try
@@ -44,9 +41,8 @@ public class CreatePackages : Task
     void InnerExecute()
     {
         Directory.CreateDirectory(NuGetsFolder.FullPath());
-        Directory.CreateDirectory(ChocosFolder.FullPath());
 
-        var packageCreator = new PackageCreator(PackagingFolder.FullPath(), NuGetsFolder.FullPath(), ChocosFolder.FullPath(), ProjectName, Version, Log);
+        var packageCreator = new PackageCreator(PackagingFolder.FullPath(), NuGetsFolder.FullPath(), ProjectName, Version, Log);
         packageCreator.CreatePackagesFromNuSpecs();
     }
 }

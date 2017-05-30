@@ -11,8 +11,7 @@
       ProjectName="$(ProjectName)"
       Version="$(GitVersion_NuGetVersion)"
       PackagingFolder="$(SolutionDir)..\packaging\"
-      NuGetsFolder="$(SolutionDir)..\nugets\"
-      ChocosFolder="$(SolutionDir)..\chocos\" />
+      NuGetsFolder="$(SolutionDir)..\nugets\" />
   </Target>
 
   <PropertyGroup>

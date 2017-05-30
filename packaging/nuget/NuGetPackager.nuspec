@@ -17,10 +17,14 @@
     </dependencies>
     <developmentDependency>true</developmentDependency>
   </metadata>
-
   <files>
     <file src="..\..\src\NuGetPackager\bin\Release\Microsoft.Web.XmlTransform.dll" target="build" />
-    <file src="..\..\src\NuGetPackager\bin\Release\NuGet.Core.dll" target="build" />
+    <file src="..\..\src\NuGetPackager\bin\Release\NuGet.Common.dll" target="build" />
+    <file src="..\..\src\NuGetPackager\bin\Release\NuGet.Frameworks.dll" target="build" />
+    <file src="..\..\src\NuGetPackager\bin\Release\NuGet.Packaging.dll" target="build" />
+    <file src="..\..\src\NuGetPackager\bin\Release\NuGet.Packaging.Core.dll" target="build" />
+    <file src="..\..\src\NuGetPackager\bin\Release\NuGet.Packaging.Core.Types.dll" target="build" />
+    <file src="..\..\src\NuGetPackager\bin\Release\NuGet.Versioning.dll" target="build" />
     <file src="..\..\src\NuGetPackager\bin\Release\NuGetPackager.dll" target="build" />
     <file src="..\..\src\NuGetPackager\NuGetPackager.targets" target="build" />
   </files>
