@@ -1,5 +1,7 @@
 ﻿namespace NuGetPackager
 {
+    using System;
+    using System.Collections.Generic;
     using System.IO;
     using Microsoft.Build.Utilities;
     using NuGet.Packaging;
@@ -30,7 +32,7 @@
                 { "projectUrl", () => "http://particular.net/" },
                 { "iconUrl", () => "http://s3.amazonaws.com/nuget.images/NServiceBus_32.png" },
                 { "requireLicenseAcceptance", () => "true" },
-                { "copyright", () => string.Format("Copyright 2010-{0} NServiceBus. All rights reserved", DateTime.UtcNow.Year) },
+                { "copyright", () => $"Copyright 2010-{DateTime.UtcNow.Year} NServiceBus. All rights reserved"},
                 { "tags", () => "nservicebus servicebus cqrs publish subscribe" },
             };
         }
