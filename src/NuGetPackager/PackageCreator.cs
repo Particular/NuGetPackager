@@ -27,7 +27,7 @@
                 { "authors", () => "NServiceBus Ltd" },
                 { "owners", () => "NServiceBus Ltd" },
                 { "licenseUrl", () => "http://particular.net/LicenseAgreement" },
-                { "projectUrl", () => "http://particular.net/" },
+                { "projectUrl", () => $"https://docs.particular.net/nuget/{projectName}/" },
                 { "iconUrl", () => "http://s3.amazonaws.com/nuget.images/NServiceBus_32.png" },
                 { "requireLicenseAcceptance", () => "true" },
                 { "copyright", () => $"Copyright 2010-{DateTime.UtcNow.Year} NServiceBus. All rights reserved"},
