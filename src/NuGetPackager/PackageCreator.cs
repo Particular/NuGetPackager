@@ -27,7 +27,6 @@
                 { "authors", () => "NServiceBus Ltd" },
                 { "owners", () => "NServiceBus Ltd" },
                 { "licenseUrl", () => "http://particular.net/LicenseAgreement" },
-                { "projectUrl", () => "http://particular.net/" },
                 { "iconUrl", () => "http://s3.amazonaws.com/nuget.images/NServiceBus_32.png" },
                 { "requireLicenseAcceptance", () => "true" },
                 { "copyright", () => $"Copyright 2010-{DateTime.UtcNow.Year} NServiceBus. All rights reserved"},
@@ -64,6 +63,7 @@
             using (var stream = File.OpenRead(nuSpec))
             {
                 var manifest = Manifest.ReadFrom(stream, p => GetPropertyValue(p), false);
+                manifest.Metadata.SetProjectUrl($"https://docs.particular.net/nuget/{manifest.Metadata.Id}/");
                 packageBuilder.Populate(manifest.Metadata);
 
                 if (manifest.Files != null)
