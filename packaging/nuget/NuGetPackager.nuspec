@@ -10,6 +10,7 @@
     <description>NuGetPackager</description>
     <summary></summary>
     <tags>NuGetPackager</tags>
+    <projectUrl>$projectUrl$</projectUrl>
     <developmentDependency>true</developmentDependency>
     <minClientVersion>2.8</minClientVersion>
     <dependencies>

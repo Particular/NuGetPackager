@@ -26,6 +26,7 @@
                 { "version", () => version },
                 { "authors", () => "NServiceBus Ltd" },
                 { "owners", () => "NServiceBus Ltd" },
+                { "projectUrl", () => "TBD" },
                 { "licenseUrl", () => "http://particular.net/LicenseAgreement" },
                 { "iconUrl", () => "http://s3.amazonaws.com/nuget.images/NServiceBus_32.png" },
                 { "requireLicenseAcceptance", () => "true" },
